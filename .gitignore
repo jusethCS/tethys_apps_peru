@@ -1,0 +1,15 @@
+*.pydevproject
+*.project
+*.egg-info
+*.class
+*.pyo
+*.pyc
+*.db
+*.sqlite
+*.DS_Store
+.idea/
+services.yml
+.vscode
+.env
+*.cer
+config-server.sh
