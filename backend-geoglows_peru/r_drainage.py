@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 user = os.getlogin()
 user_dir = os.path.expanduser('~{}'.format(user))
 os.chdir(user_dir)
-os.chdir("tethys_apps_ecuador/backend-geoglows_ecuador")
+os.chdir("tethys_apps_peru/backend-geoglows_peru")
 
 # Import enviromental variables
 load_dotenv()
@@ -25,7 +25,7 @@ db = create_engine(token)
 conn = db.connect()
 
 # Read the dataframe stations
-data = pd.read_excel('Ecuador_Geoglows_Drainage.xlsx', index_col=0) 
+data = pd.read_excel('Peru_Geoglows_Drainage.xlsx', index_col=0) 
 df = pd.DataFrame(data)
 
 # Insert to database
