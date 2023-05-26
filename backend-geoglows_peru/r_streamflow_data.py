@@ -61,7 +61,7 @@ error_list = []
 
 # Loop routine
 n = len(stations.code)
-for i in range(85, n):
+for i in range(n):
     code = stations.code[i]
     # Progress
     prog = round(100 * i/n, 3)
