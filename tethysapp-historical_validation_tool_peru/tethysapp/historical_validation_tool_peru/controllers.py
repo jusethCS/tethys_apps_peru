@@ -26,6 +26,7 @@ import plotly.graph_objs as go
 import datetime as dt
 
 # Base
+import io
 import os
 from dotenv import load_dotenv
 
@@ -744,7 +745,7 @@ def get_corrected_data_xlsx(request):
     db= create_engine(tokencon)
     conn = db.connect()
     # Data series
-    observed_data = get_format_data("select datetime, {0} from streamflow_data order by datetime;".format(station_code), conn)
+    observed_data = get_format_data("select * from sf_{0} order by datetime;".format(station_code), conn)
     simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
     corrected_data = get_bias_corrected_data(simulated_data, observed_data)
 
@@ -799,7 +800,7 @@ def get_corrected_forecast_xlsx(request):
     db= create_engine(tokencon)
     conn = db.connect()
     # Data series
-    observed_data = get_format_data("select datetime, {0} from streamflow_data order by datetime;".format(station_code), conn)
+    observed_data = get_format_data("select * from sf_{0} order by datetime;".format(station_code), conn)
     simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
     corrected_data = get_bias_corrected_data(simulated_data, observed_data)
     # Raw forecast
