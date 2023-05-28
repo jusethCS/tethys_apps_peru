@@ -694,4 +694,129 @@ def get_raw_forecast_date(request):
        'corr_ensemble_forecast_plot': corr_ensemble_forecast_plot,
        'corr_forecast_table': corr_forecast_table
     })
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Retrieve xlsx data
+@controller(name='get_simulated_data_xlsx',url='historical-validation-tool-peru/get-simulated-data-xlsx')
+def get_simulated_data_xlsx(request):
+    # Retrieving GET arguments
+    station_code = request.GET['codigo'] #"h0267"
+    station_comid = request.GET['comid'] #9027406
+    # Establish connection to database
+    db= create_engine(tokencon)
+    conn = db.connect()
+    # Data series
+    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    simulated_data = simulated_data.rename(columns={
+                                "streamflow_m^3/s": "Historical simulation (m3/s)"})
+    # Crear el archivo Excel
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    simulated_data.to_excel(writer, sheet_name='serie_historica_simulada', index=True)  # Aquí se incluye el índice
+    writer.save()
+    output.seek(0)
+    # Configurar la respuesta HTTP para descargar el archivo
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=serie_historica_simulada.xlsx'
+    response.write(output.getvalue())
+    return response
+
+
+# Retrieve xlsx data
+@controller(name='get_corrected_data_xlsx',url='historical-validation-tool-peru/get-corrected-data-xlsx')
+def get_corrected_data_xlsx(request):
+    # Retrieving GET arguments
+    station_code = request.GET['codigo'] #"h0267"
+    station_comid = request.GET['comid'] #9027406
+    # Establish connection to database
+    db= create_engine(tokencon)
+    conn = db.connect()
+    # Data series
+    observed_data = get_format_data("select datetime, {0} from streamflow_data order by datetime;".format(station_code), conn)
+    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    corrected_data = get_bias_corrected_data(simulated_data, observed_data)
+
+    corrected_data = corrected_data.rename(columns={
+                                "Corrected Simulated Streamflow" : "Corrected Simulated Streamflow (m3/s)"})
+    # Crear el archivo Excel
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    corrected_data.to_excel(writer, sheet_name='serie_historica_corregida', index=True)  # Aquí se incluye el índice
+    writer.save()
+    output.seek(0)
+    # Configurar la respuesta HTTP para descargar el archivo
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=serie_historica_corregida.xlsx'
+    response.write(output.getvalue())
+    return response
+
+
+# Retrieve xlsx data
+@controller(name='get_forecast_xlsx',url='historical-validation-tool-peru/get-forecast-xlsx')
+def get_forecast_xlsx(request):
+    # Retrieving GET arguments
+    station_code = request.GET['codigo']
+    station_comid = request.GET['comid']
+    forecast_date = request.GET['fecha']
+    # Establish connection to database
+    db= create_engine(tokencon)
+    conn = db.connect()
+    # Raw forecast
+    ensemble_forecast = get_forecast_date(station_comid, forecast_date)
+    ensemble_stats = get_ensemble_stats(ensemble_forecast)
+    # Crear el archivo Excel
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    ensemble_stats.to_excel(writer, sheet_name='ensemble_forecast', index=True)  # Aquí se incluye el índice
+    writer.save()
+    output.seek(0)
+    # Configurar la respuesta HTTP para descargar el archivo
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=ensemble_forecast.xlsx'
+    response.write(output.getvalue())
+    return response
+
+
+@controller(name='get_corrected_forecast_xlsx',url='historical-validation-tool-peru/get-corrected-forecast-xlsx')
+def get_corrected_forecast_xlsx(request):
+    # Retrieving GET arguments
+    station_code = request.GET['codigo']
+    station_comid = request.GET['comid']
+    forecast_date = request.GET['fecha']
+    # Establish connection to database
+    db= create_engine(tokencon)
+    conn = db.connect()
+    # Data series
+    observed_data = get_format_data("select datetime, {0} from streamflow_data order by datetime;".format(station_code), conn)
+    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    corrected_data = get_bias_corrected_data(simulated_data, observed_data)
+    # Raw forecast
+    ensemble_forecast = get_forecast_date(station_comid, forecast_date)
+    # Corrected forecast
+    corrected_ensemble_forecast = get_corrected_forecast(simulated_data, ensemble_forecast, observed_data)
+    # Forecast stats
+    corrected_ensemble_stats = get_ensemble_stats(corrected_ensemble_forecast)
+    # Crear el archivo Excel
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    corrected_ensemble_stats.to_excel(writer, sheet_name='corrected_ensemble_forecast', index=True)  # Aquí se incluye el índice
+    writer.save()
+    output.seek(0)
+    # Configurar la respuesta HTTP para descargar el archivo
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=corrected_ensemble_forecast.xlsx'
+    response.write(output.getvalue())
+    return response
+
