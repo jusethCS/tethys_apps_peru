@@ -617,7 +617,7 @@ fetch("get-rivers")
             create: false,
             onChange: function(value, isOnInitialize) {
                 // Station item selected
-                river_item = est_layer.filter(item => item.river == value);
+                river_item = est_layer.filter(item => item.comid == value);
                 // Remove marker if exists
                 if (typeof ss_marker !== 'undefined') {
                     map.removeLayer(ss_marker)
