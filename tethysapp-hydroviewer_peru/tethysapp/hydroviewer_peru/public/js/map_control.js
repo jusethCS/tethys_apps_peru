@@ -482,8 +482,8 @@ info.onAdd = function (map) {
                                     ${basin}
                                 </select>
                                 <br>
-                                <label class="label-control" for="select-river">Nombre de río:</label>
-                                <select id="select-river" multiple placeholder="Escriba el nombre del río de interés."></select>
+                                <label class="label-control" for="select-river">Comid del río:</label>
+                                <select id="select-river" multiple placeholder="Escriba el comid río de interés."></select>
                                 <br>
                                 <label for="shpFile" class="label-control">Area geográfica:</label>
                                 <input class="form-control" type="file" id="shpFile" accept=".shp">
@@ -611,9 +611,9 @@ fetch("get-rivers")
         $('#select-river').selectize({
             maxItems: 1,
             options: est_layer,
-            valueField:  'river',
-            labelField:  'river',
-            searchField: 'river',
+            valueField:  'comid',
+            labelField:  'comid',
+            searchField: 'comid',
             create: false,
             onChange: function(value, isOnInitialize) {
                 // Station item selected
