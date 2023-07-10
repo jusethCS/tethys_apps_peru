@@ -104,8 +104,8 @@ async function get_data_station(comid, name, lat, lon, loc1, loc2){
     $("#station-river-custom").html(`<b>RIO:</b> &nbsp ${name}`)
     $("#station-latitude-custom").html(`<b>LATITUD:</b> &nbsp ${lat}`)
     $("#station-longitude-custom").html(`<b>LONGITUD:</b> &nbsp ${lon}`)
-    $("#station-locality1-custom").html(`<b>PROVINCIA:</b> &nbsp ${loc1}`)
-    $("#station-locality2-custom").html(`<b>CANTÓN:</b> &nbsp ${loc2}`)
+    $("#station-locality1-custom").html(`<b>DEPARTAMENTO:</b> &nbsp ${loc1}`)
+    $("#station-locality2-custom").html(`<b>PROVINCIA:</b> &nbsp ${loc2}`)
 
     loader = `<div class="loading-container" style="height: 350px; padding-top: 12px;"> 
                 <div class="loading"> 
