@@ -487,7 +487,7 @@ def get_data(request):
 
     # Data series
     observed_data = get_format_data("select * from sf_{0} order by datetime;".format(station_code), conn)
-    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    simulated_data = get_format_data("select * from r_{0} where datetime < '2022-06-01 00:00:00';".format(station_comid), conn)
     corrected_data = get_bias_corrected_data(simulated_data, observed_data)
 
     # Raw forecast
@@ -641,7 +641,7 @@ def get_raw_forecast_date(request):
 
     # Data series
     observed_data = get_format_data("select * from sf_{0} order by datetime;".format(station_code), conn)
-    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    simulated_data = get_format_data("select * from r_{0} where datetime < '2022-06-01 00:00:00';".format(station_comid), conn)
     corrected_data = get_bias_corrected_data(simulated_data, observed_data)
     
     # Raw forecast
@@ -719,7 +719,7 @@ def get_simulated_data_xlsx(request):
     db= create_engine(tokencon)
     conn = db.connect()
     # Data series
-    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    simulated_data = get_format_data("select * from r_{0} where datetime < '2022-06-01 00:00:00';".format(station_comid), conn)
     simulated_data = simulated_data.rename(columns={
                                 "streamflow_m^3/s": "Historical simulation (m3/s)"})
     # Crear el archivo Excel
@@ -746,7 +746,7 @@ def get_corrected_data_xlsx(request):
     conn = db.connect()
     # Data series
     observed_data = get_format_data("select * from sf_{0} order by datetime;".format(station_code), conn)
-    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    simulated_data = get_format_data("select * from r_{0} where datetime < '2022-06-01 00:00:00';".format(station_comid), conn)
     corrected_data = get_bias_corrected_data(simulated_data, observed_data)
 
     corrected_data = corrected_data.rename(columns={
@@ -801,7 +801,7 @@ def get_corrected_forecast_xlsx(request):
     conn = db.connect()
     # Data series
     observed_data = get_format_data("select * from sf_{0} order by datetime;".format(station_code), conn)
-    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    simulated_data = get_format_data("select * from r_{0} where datetime < '2022-06-01 00:00:00';".format(station_comid), conn)
     corrected_data = get_bias_corrected_data(simulated_data, observed_data)
     # Raw forecast
     ensemble_forecast = get_forecast_date(station_comid, forecast_date)

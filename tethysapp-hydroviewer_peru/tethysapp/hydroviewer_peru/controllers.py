@@ -306,7 +306,7 @@ def get_data(request):
     db= create_engine(tokencon)
     conn = db.connect()
     # Data series
-    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    simulated_data = get_format_data("select * from r_{0} where datetime < '2022-06-01 00:00:00';".format(station_comid), conn)
     ensemble_forecast = get_format_data("select * from f_{0};".format(station_comid), conn)
     forecast_records = get_format_data("select * from fr_{0};".format(station_comid), conn)
     ensemble_stats = get_ensemble_stats(ensemble_forecast)
@@ -367,7 +367,7 @@ def get_raw_forecast_date(request):
     db= create_engine(tokencon)
     conn = db.connect()
     # Data series
-    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    simulated_data = get_format_data("select * from r_{0} where datetime < '2022-06-01 00:00:00';".format(station_comid), conn)
     ensemble_forecast = get_forecast_date(station_comid, forecast_date)
     forecast_records = get_format_data("select * from fr_{0};".format(station_comid), conn)
     #forecast_records = get_forecast_record_date(station_comid, forecast_date)
@@ -442,7 +442,7 @@ def get_simulated_data_xlsx(request):
     db= create_engine(tokencon)
     conn = db.connect()
     # Data series
-    simulated_data = get_format_data("select * from r_{0};".format(station_comid), conn)
+    simulated_data = get_format_data("select * from r_{0} where datetime < '2022-06-01 00:00:00';".format(station_comid), conn)
     simulated_data = simulated_data.rename(columns={
                                 "streamflow_m^3/s": "Historical simulation (m3/s)"})
     # Crear el archivo Excel
